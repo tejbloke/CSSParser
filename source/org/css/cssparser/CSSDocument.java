@@ -13,6 +13,7 @@ public class CSSDocument {
 	public final static int PRETTYPRINT=0;
 	public final static int COMPACT=1;
 	public final static int COMPRESSED=2;
+			
 	
 	
 	public String toCSS(){
