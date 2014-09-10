@@ -2,7 +2,7 @@ package org.css.cssparser;
 
 import java.util.ArrayList;
 
-public class CSSNodeArrayList<T> extends ArrayList {
+public class CSSNodeArrayList<Node> extends ArrayList {
 
 	public boolean containsSameName(String name){
 

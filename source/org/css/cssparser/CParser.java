@@ -28,23 +28,17 @@ import org.apache.commons.lang3.StringUtils;
      Optimizing the css 
  * 
  * Yet to be Implemented :
- *  CSSDocument - CParser should be made as singleton
- *  			  parse() method should return CSSDocument object.
- *  PrettyPrint - option
+ *  CSSDocument - CParser should be made as singleton - pending
+ *  			  parse() method should return CSSDocument object. - done
+ *  PrettyPrint - option - pending
+ *  PrintSettings - with styling information - pending
  *  *  */
 
 public class CParser {
-private String cssStr;
-private ArrayList<KeyframeNode> keyFrames;
-public CSSNodeArrayList<CSSNode>cssNodes;
-public boolean isWellformed;
-public ArrayList<String>errorList;
-public ArrayList<FontNode>fontNodes;
 public final static int PRETTYPRINT=0;
 public final static int COMPACT=1;
 public final static int COMPRESSED=2;
-
-	
+public final CSSDocument cssDocument=new CSSDocument();
 //yet to be implemented.
 	//Logger log=Logger.getLogger(CParser.class);
 
@@ -53,13 +47,18 @@ public final static int COMPRESSED=2;
 	 * @return CParser object
 	 * */
 	public CParser(String css){
-		cssStr=css;
-		cssStr=cssStr.trim();
-		cssNodes=new CSSNodeArrayList<CSSNode>();
-		keyFrames=new ArrayList<KeyframeNode>();
-		fontNodes=new ArrayList<FontNode>();
-		errorList=new ArrayList<String>();
+		
+		cssDocument.cssStr=css.trim();
+		cssDocument.cssNodes=new CSSNodeArrayList<CSSNode>();
+		cssDocument.keyFrames=new ArrayList<KeyframeNode>();
+		cssDocument.fontNodes=new ArrayList<FontNode>();
+		cssDocument.errorList=new ArrayList<String>();
+		
 	}
+	
+	
+	
+	
 	
 	/**
 	 * @param java.io.File - should be a valid css file
@@ -71,26 +70,28 @@ public final static int COMPRESSED=2;
 		//BasicConfigurator.configure();
 	}
 	
-	public void parse()throws Exception{
+	public CSSDocument parse()throws Exception{
 		try{
 			clearComments();
 		if(isWellformed()){
-			isWellformed=true;
+			cssDocument.isWellformed=true;
 			separateKeyFrames();
 			separateFontFaces();
 			splitCss();
+			return cssDocument;
 			/* testing area */
-		}
-		else{
-			isWellformed=false;
-			errorList.add("Not WellFormed");
+		}else{
+			cssDocument.isWellformed=false;
+			cssDocument.errorList.add("MalFormed");
 		}
 		}catch(Exception e){e.printStackTrace();}
+		
+		return null;
 	}
 
 	private boolean isWellformed(){
-		if(StringUtils.countMatches(cssStr, "}")==StringUtils.countMatches(cssStr, "{")){
-			if(StringUtils.countMatches(cssStr, "/*") != StringUtils.countMatches(cssStr, "*/")){
+		if(StringUtils.countMatches(cssDocument.cssStr, "}")==StringUtils.countMatches(cssDocument.cssStr, "{")){
+			if(StringUtils.countMatches(cssDocument.cssStr, "/*") != StringUtils.countMatches(cssDocument.cssStr, "*/")){
 				return false;
 			}
 			return true;
@@ -98,58 +99,28 @@ public final static int COMPRESSED=2;
 		return false;
 	}
 	
-	public String toCSS(){
-		StringBuffer css=new StringBuffer();
-		
-		if(fontNodes.size()>0){
-			css.append("/*Fonts*/"+Node.BR);
-		}
-		
-		Iterator<FontNode>itr3=fontNodes.iterator();
-		while(itr3.hasNext()){
-			css.append(itr3.next()+Node.BR);
-		}
-		
-		if(cssNodes.size()>0){
-			css.append("/*CSS*/"+Node.BR);
-		}
-		Iterator<CSSNode>itr1=cssNodes.iterator();
-		while(itr1.hasNext()){
-			css.append(itr1.next()+Node.BR);
-		}
-		
-		if(keyFrames.size()>0){
-			css.append("/*Keyframes*/"+Node.BR);
-		}
-		
-		Iterator<KeyframeNode>itr2=keyFrames.iterator();
-		while(itr2.hasNext()){
-			css.append(itr2.next()+Node.BR);
-		}
-		
-		return css.toString();
-	}
+	
 	
 	
 	private void separateKeyFrames() throws Exception{
-		if(cssStr.contains("keyframes")){
-			int bIndex=cssStr.indexOf("@keyframes");
+		if(cssDocument.cssStr.contains("keyframes")){
+			int bIndex=cssDocument.cssStr.indexOf("@keyframes");
 			if(bIndex==-1){
-				if(cssStr.contains("@-webkit-keyframes")){
-					bIndex=cssStr.indexOf("@-webkit-keyframes");
+				if(cssDocument.cssStr.contains("@-webkit-keyframes")){
+					bIndex=cssDocument.cssStr.indexOf("@-webkit-keyframes");
 				}
-				else if(cssStr.contains("@-moz-keyframes")){
-					bIndex=cssStr.indexOf("@-moz-keyframes");
+				else if(cssDocument.cssStr.contains("@-moz-keyframes")){
+					bIndex=cssDocument.cssStr.indexOf("@-moz-keyframes");
 				}
-				else if(cssStr.contains("@-ms-keyframes")){
-					bIndex=cssStr.indexOf("@-ms-keyframes");
+				else if(cssDocument.cssStr.contains("@-ms-keyframes")){
+					bIndex=cssDocument.cssStr.indexOf("@-ms-keyframes");
 				}
-				else if(cssStr.contains("@-o-keyframes")){
-					bIndex=cssStr.indexOf("@-o-keyframes");
+				else if(cssDocument.cssStr.contains("@-o-keyframes")){
+					bIndex=cssDocument.cssStr.indexOf("@-o-keyframes");
 				}
 			}
 			
-			String subStr=cssStr.substring(bIndex,cssStr.length());
+			String subStr=cssDocument.cssStr.substring(bIndex,cssDocument.cssStr.length());
 			String []list=subStr.split("");
 			Stack<String> s=new Stack<String>();
 			int flag=0;
@@ -176,74 +147,64 @@ public final static int COMPRESSED=2;
 			}
 			String keyframe=subStr.substring(0,index);
 			String subStrMod=subStr.replace(keyframe,"");
-			cssStr=cssStr.replace(subStr, subStrMod);
+			cssDocument.cssStr=cssDocument.cssStr.replace(subStr, subStrMod);
 			KeyframeNode kFrame=new KeyframeNode(keyframe);
-				if(!keyFrames.contains(kFrame)){
-					keyFrames.add(kFrame);
+				if(!cssDocument.keyFrames.contains(kFrame)){
+					cssDocument.keyFrames.add(kFrame);
 				}
 			}
 			//if stillContains keyframes recurse the method
-			if(cssStr.contains("keyframes")){
+			if(cssDocument.cssStr.contains("keyframes")){
 				separateKeyFrames();
 			}
 		}
 
 	private void separateFontFaces(){
-		if(cssStr.contains("@font-face")){
+		if(cssDocument.cssStr.contains("@font-face")){
 			Pattern fn=Pattern.compile("@font-face\\s+\\{[^}]+\\}");
-			Matcher fm=fn.matcher(cssStr);
+			Matcher fm=fn.matcher(cssDocument.cssStr);
 				while(fm.find()){
 					String font=fm.group(0);
 					FontNode fontNode=new FontNode(font);
 					
 					/*start*/
-					if(fontNodes.contains(fontNode)){
-						errorList.add("Ignored duplicate FontNode : "+fontNode.getName());
+					if(cssDocument.fontNodes.contains(fontNode)){
+						cssDocument.errorList.add("Ignored duplicate FontNode : "+fontNode.getName());
 						//log.debug("Ignored duplicate FontNode : "+fontNode.getName());
 						}
-					fontNodes.add(fontNode);
+					cssDocument.fontNodes.add(fontNode);
 					/*end*/
-
-					/*//replace the above /start to end/ overridden code with this....- css font node duplication has been ignored.
-					 * if(!fontNodes.contains(fontNode)){
-							fontNodes.add(fontNode);					
-						}
-						else{
-							errorList.add("Ignored duplicate FontNode : "+fontNode.getName());
-						}
-					 * */
 				}
-			cssStr=cssStr.replaceAll("@font-face\\s+\\{[^}]+\\}", "");	
+				cssDocument.cssStr=cssDocument.cssStr.replaceAll("@font-face\\s+\\{[^}]+\\}", "");	
 		}
 	}
 	
 	public void clearComments(){
-		if(cssStr.contains("/*")){
-			cssStr=cssStr.replaceAll("\\/\\*[^*/]+\\*\\/", "");
+		if(cssDocument.cssStr.contains("/*")){
+			cssDocument.cssStr=cssDocument.cssStr.replaceAll("\\/\\*[^*/]+\\*\\/", "");
 		}
 	}
 	
 	public void splitCss(){
 		Pattern cn=Pattern.compile("[^{}]+\\{+[^}]+\\}");
-		Matcher cm=cn.matcher(cssStr);
-		int count=0;
+		Matcher cm=cn.matcher(cssDocument.cssStr);
 			while(cm.find()){
 				CSSNode newNode=new CSSNode(cm.group(0));
-				if(!cssNodes.contains(newNode)){
-					if(cssNodes.containsSameName(newNode.getName())){
-						int ind=cssNodes.indexOfCSSNode(newNode.getName());
-						CSSNode tempNode=(CSSNode) cssNodes.get(ind);
+				if(!cssDocument.cssNodes.contains(newNode)){
+					if(cssDocument.cssNodes.containsSameName(newNode.getName())){
+						int ind=cssDocument.cssNodes.indexOfCSSNode(newNode.getName());
+						CSSNode tempNode=(CSSNode) cssDocument.cssNodes.get(ind);
 						tempNode.mergeCSSNodes(newNode);
-						cssNodes.set(ind, tempNode);
-						errorList.add("Warning: duplicate CSS with diff attributes: "+tempNode);
+						cssDocument.cssNodes.set(ind, tempNode);
+						cssDocument.errorList.add("Warning: duplicate CSS with diff attributes: "+tempNode);
 					}
 					else{
-						cssNodes.add(newNode);
+						cssDocument.cssNodes.add(newNode);
 					}
 				CSSValidator.validate(newNode);
 				}
 				else{
-					errorList.add("Warning : duplicate CSS: "+newNode.getName());
+					cssDocument.errorList.add("Warning : duplicate CSS: "+newNode.getName());
 					//log.debug("Warning : duplicate CSS: "+newNode.getName());
 				}
 			}
@@ -251,14 +212,14 @@ public final static int COMPRESSED=2;
 	
 	
 	public void addCSSNode(CSSNode node){
-		if(!cssNodes.contains(node)){
-			cssNodes.add(node);
+		if(!cssDocument.cssNodes.contains(node)){
+			cssDocument.cssNodes.add(node);
 		}
 	}
 
 	public void addFontNode(CSSNode node){
-		if(!cssNodes.contains(node)){
-			cssNodes.add(node);
+		if(!cssDocument.cssNodes.contains(node)){
+			cssDocument.cssNodes.add(node);
 		}
 	}
 	
