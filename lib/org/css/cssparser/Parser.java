@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
  *  PrintSettings - with styling information - pending
  *  *  */
 
-public class CParser {
+public class Parser {
 public final static int PRETTYPRINT=0;
 public final static int COMPACT=1;
 public final static int COMPRESSED=2;
@@ -46,7 +46,7 @@ public final CSSDocument cssDocument=new CSSDocument();
 	 * @param java.lang.String - should be a valid css String
 	 * @return CParser object
 	 * */
-	public CParser(String css){
+	public Parser(String css){
 		
 		cssDocument.cssStr=css.trim();
 		cssDocument.cssNodes=new CSSNodeArrayList<CSSNode>();
@@ -65,7 +65,7 @@ public final CSSDocument cssDocument=new CSSDocument();
 	 * @throws java.io.FileNotFoundException
 	 * @return CParser object
 	 * */
-	public CParser(File cssFile){
+	public Parser(File cssFile){
 		this(Utils.getFileAsString(cssFile,"UTF-8"));
 		//BasicConfigurator.configure();
 	}
@@ -211,17 +211,7 @@ public final CSSDocument cssDocument=new CSSDocument();
 	}
 	
 	
-	public void addCSSNode(CSSNode node){
-		if(!cssDocument.cssNodes.contains(node)){
-			cssDocument.cssNodes.add(node);
-		}
-	}
-
-	public void addFontNode(CSSNode node){
-		if(!cssDocument.cssNodes.contains(node)){
-			cssDocument.cssNodes.add(node);
-		}
-	}
+	
 	
 	
 	}

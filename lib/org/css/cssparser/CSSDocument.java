@@ -14,8 +14,6 @@ public class CSSDocument {
 	public final static int COMPACT=1;
 	public final static int COMPRESSED=2;
 			
-	
-	
 	public String toCSS(){
 		StringBuffer css=new StringBuffer();
 		
@@ -47,4 +45,17 @@ public class CSSDocument {
 		
 		return css.toString();
 	}
+	
+	public void addCSSNode(CSSNode node){
+		if(!cssNodes.contains(node)){
+			cssNodes.add(node);
+		}
+	}
+
+	public void addFontNode(CSSNode node){
+		if(!cssNodes.contains(node)){
+			cssNodes.add(node);
+		}
+	}
+	
 }
