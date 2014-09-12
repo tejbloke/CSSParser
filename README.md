@@ -35,5 +35,6 @@ void addCSSNode(CSSNode node)
 addFontNode(FontNode node)
 
 Initializing the parser:
-CParser parser=new CParser(cssString);
-				parser.parse();
+CSSDocument doc=new Parser(css).parse();
+				
+				
