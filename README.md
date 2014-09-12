@@ -1,5 +1,8 @@
 CSSParser
 =========
+Implemented in an independent way, not inspired or used the standard w3c sac interfaces and classes.
+Java programmers are welcome to contribute or give a design suggestion.
+
 Dependencies - commons-lang3-3.1.jar
 
 Implemetations : 
