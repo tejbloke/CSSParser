@@ -25,16 +25,19 @@ Yet to be implemented :
 
 
 Accessible Nodes:
+```Java
 CSSNodeArrayList<CSSNode>cssNodes;
 ArrayList<FontNode>fontNodes;
 ArrayList<KeyframeNode> keyFrames;
-
+```
 Methods:
+```Java
 String toCSS()
 void addCSSNode(CSSNode node)
 addFontNode(FontNode node)
-
+```
 Initializing the parser:
+```Java
 CSSDocument doc=new Parser(css).parse();
-				
+```				
 				
