@@ -7,6 +7,7 @@ public class CSSDocument {
 	public String cssStr;
 	public ArrayList<KeyframeNode> keyFrames;
 	public CSSNodeArrayList<CSSNode> cssNodes;
+	public ArrayList<String> commentNodes;
 	public boolean isWellformed;
 	public ArrayList<String>errorList;
 	public ArrayList<FontNode>fontNodes;

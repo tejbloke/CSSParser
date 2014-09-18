@@ -51,6 +51,7 @@ public final CSSDocument cssDocument=new CSSDocument();
 		cssDocument.cssStr=css.trim();
 		cssDocument.cssNodes=new CSSNodeArrayList<CSSNode>();
 		cssDocument.keyFrames=new ArrayList<KeyframeNode>();
+		cssDocument.commentNodes=new ArrayList<String>();
 		cssDocument.fontNodes=new ArrayList<FontNode>();
 		cssDocument.errorList=new ArrayList<String>();
 		
@@ -72,11 +73,13 @@ public final CSSDocument cssDocument=new CSSDocument();
 	
 	public CSSDocument parse()throws Exception{
 		try{
-			clearComments();
+			//clearComments();
 		if(isWellformed()){
 			cssDocument.isWellformed=true;
+			separateComments();
 			separateKeyFrames();
 			separateFontFaces();
+			
 			splitCss();
 			return cssDocument;
 			/* testing area */
@@ -98,10 +101,19 @@ public final CSSDocument cssDocument=new CSSDocument();
 		}
 		return false;
 	}
-	
-	
-	
-	
+
+	private void separateComments()throws Exception{
+		if(cssDocument.cssStr.contains("/*")){
+			Pattern p=Pattern.compile("\\/\\*[^*]*\\*+([^/*][^*]*\\*+)*\\/",Pattern.DOTALL);
+			Matcher m=p.matcher(cssDocument.cssStr);
+			while(m.find()){
+				cssDocument.commentNodes.add(m.group(0));
+			}
+			
+			clearComments();
+			
+		}
+	}
 	private void separateKeyFrames() throws Exception{
 		if(cssDocument.cssStr.contains("keyframes")){
 			int bIndex=cssDocument.cssStr.indexOf("@keyframes");
@@ -181,7 +193,8 @@ public final CSSDocument cssDocument=new CSSDocument();
 	
 	public void clearComments(){
 		if(cssDocument.cssStr.contains("/*")){
-			cssDocument.cssStr=cssDocument.cssStr.replaceAll("\\/\\*[^*/]+\\*\\/", "");
+			cssDocument.cssStr=cssDocument.cssStr.replaceAll("\\/\\*[^*]+\\*\\/", "");//single line comments only
+			cssDocument.cssStr=cssDocument.cssStr.replaceAll("\\/\\*[^*]*\\*+([^/*][^*]*\\*+)*\\/", "");//for single and multiline comments
 		}
 	}
 	

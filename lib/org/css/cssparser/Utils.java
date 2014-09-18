@@ -26,7 +26,7 @@ public class Utils {
 	
 	private final static String BR=System.getProperty("line.separator");
 	
-	static String getFileAsString(File file,String encoding){
+	public static String getFileAsString(File file,String encoding){
 		String str="";
 		if(file.exists() && file.length()>0){
 			try{
