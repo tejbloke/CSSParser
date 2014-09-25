@@ -4,9 +4,10 @@ Parser Implementation not inspired by or used the standard w3c sac interfaces an
 
 Java programmers are welcome to contribute or give a design suggestion.
 
-Dependencies - commons-lang3-3.1.jar
+####Dependencies :
+ *   commons-lang3-3.1.jar
 
-###Implemetations : 
+####Implemetations : 
  *   Supports CSS 1, 2 and 3 style properties
  *   Supports CSS3 keyframes
  *   Supports fonts
@@ -17,26 +18,26 @@ Dependencies - commons-lang3-3.1.jar
  *   Optimizing the css 
  *   User defined node creation
  
-###Yet to be implemented :
+####Yet to be implemented :
  *  KeyframeNode implementation is partial
  *  CSSDocument - CParser should be made as singleton
  *  parse() method should return CSSDocument object
  *  PrettyPrint - option
 
 
-###Accessible Nodes:
+####Accessible Nodes:
 ```Java
 CSSNodeArrayList<CSSNode>cssNodes;
 ArrayList<FontNode>fontNodes;
 ArrayList<KeyframeNode> keyFrames;
 ```
-###Methods:
+####Methods:
 ```Java
 String toCSS()
 void addCSSNode(CSSNode node)
 addFontNode(FontNode node)
 ```
-###Initializing the parser:
+####Initializing the parser:
 ```Java
 CSSDocument doc=new Parser(css).parse();
 ```				
